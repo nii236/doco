@@ -1,0 +1,14 @@
+[Unit]
+Description=Accumulator
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/accumulator/
+EnvironmentFile=/var/www/accumulator/.env
+ExecStart=/var/www/accumulator/bin/accumulator -jwt-secret ${JWT_SECRET} -root-path /var/www/accumulator/web
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

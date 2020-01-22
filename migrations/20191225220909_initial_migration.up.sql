@@ -1,0 +1,72 @@
+CREATE TABLE tags (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    
+    archived BOOLEAN NOT NULL DEFAULT 0,
+    archived_at DATETIME,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE taxonomies (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    
+    archived BOOLEAN NOT NULL DEFAULT 0,
+    archived_at DATETIME,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE projects (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    sequence INTEGER NOT NULL,
+
+    archived BOOLEAN NOT NULL DEFAULT 0,
+    archived_at DATETIME,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE documents (
+    id INTEGER PRIMARY KEY,
+    project_id INTEGER NOT NULL REFERENCES projects(id),
+    taxonomy_id INTEGER NOT NULL REFERENCES taxonomies(id),
+    sequence INTEGER NOT NULL,
+
+    archived BOOLEAN NOT NULL DEFAULT 0,
+    archived_at DATETIME,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE blobs (
+    id INTEGER PRIMARY KEY,
+    file_name VARCHAR UNIQUE NOT NULL,
+    mime_type VARCHAR NOT NULL,
+    file_size_bytes INT NOT NULL,
+    EXTENSION VARCHAR NOT NULL,
+    file BLOB NOT NULL,
+    views INTEGER DEFAULT 0,
+
+    archived BOOLEAN NOT NULL DEFAULT 0,
+    archived_at DATETIME,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE documents_blobs (
+    document_id INTEGER NOT NULL REFERENCES documents(id),
+    blob_id INTEGER NOT NULL REFERENCES blobs(id),
+    version VARCHAR NOT NULL,
+    PRIMARY KEY (document_id, blob_id)
+);
+
+CREATE TABLE documents_tags (
+    document_id INTEGER NOT NULL REFERENCES documents(id),
+    tag_id INTEGER NOT NULL REFERENCES tags(id),
+    PRIMARY KEY (document_id, tag_id)
+);
+
+
